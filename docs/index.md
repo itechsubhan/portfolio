@@ -23,7 +23,7 @@ features:
     details: Building intuitive and performant mobile applications for iOS and Android.
 ---
 *** ***
-# About Me
+# About
 ## Experience
 
 ### Graduate Assistant
@@ -60,8 +60,9 @@ features:
 ### Bachelor of Engineering, Information Technology
 **Osmania University** | *2018 - 2022*
 *   **GPA:** 3.8/4.0
-
-[Download Resume](/resume.pdf)
+::: tip Click here to download my resume
+[Download](/resume.pdf)
+:::
 
 ## Technical Skills
 

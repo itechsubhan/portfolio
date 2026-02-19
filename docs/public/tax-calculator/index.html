@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TaxClarity — US Income Tax Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Surface */
+  --bg:           #f4f6f9;
+  --surface-0:    #ffffff;
+  --surface-1:    #f8f9fc;
+  --surface-2:    #edf0f5;
+
+  /* Borders */
+  --border-subtle:  rgba(0,0,0,0.06);
+  --border-default: rgba(0,0,0,0.10);
+  --border-strong:  rgba(0,0,0,0.18);
+
+  /* Typography */
+  --text-primary:   #0d1117;
+  --text-secondary: #4b5563;
+  --text-tertiary:  #8b95a1;
+  --text-inverse:   #ffffff;
+
+  /* Brand */
+  --brand:        #0050b3;
+  --brand-light:  #e6f0ff;
+  --brand-mid:    #1a6bd4;
+  --brand-glow:   rgba(0,80,179,0.10);
+  --brand-dark:   #003d8f;
+
+  /* Semantic */
+  --success:      #0a7c42;
+  --success-bg:   #e8f5ee;
+  --warning:      #b45309;
+  --warning-bg:   #fef3c7;
+  --danger:       #b91c1c;
+  --danger-bg:    #fef2f2;
+  --neutral:      #374151;
+  --neutral-bg:   #f3f4f6;
+
+  /* Shadows */
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.04);
+  --shadow-sm:  0 1px 4px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-md:  0 2px 8px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-xl:  0 20px 60px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06);
+
+  /* Layout */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+
+  /* Type */
+  --font-sans:  'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-mono:  'Geist Mono', 'SF Mono', monospace;
+
+  /* Transitions */
+  --ease:       0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  --bg:           #080c14;
+  --surface-0:    #0f1623;
+  --surface-1:    #141d2e;
+  --surface-2:    #1a2438;
+
+  --border-subtle:  rgba(255,255,255,0.04);
+  --border-default: rgba(255,255,255,0.08);
+  --border-strong:  rgba(255,255,255,0.14);
+
+  --text-primary:   #e8edf5;
+  --text-secondary: #8fa3bc;
+  --text-tertiary:  #4d6278;
+  --text-inverse:   #0d1117;
+
+  --brand:        #4d9fff;
+  --brand-light:  rgba(77,159,255,0.12);
+  --brand-mid:    #6db3ff;
+  --brand-glow:   rgba(77,159,255,0.15);
+  --brand-dark:   #2a88ff;
+
+  --success:      #34d399;
+  --success-bg:   rgba(52,211,153,0.10);
+  --warning:      #fbbf24;
+  --warning-bg:   rgba(251,191,36,0.10);
+  --danger:       #f87171;
+  --danger-bg:    rgba(248,113,113,0.10);
+  --neutral:      #94a3b8;
+  --neutral-bg:   rgba(148,163,184,0.08);
+
+  --shadow-xs:  0 1px 2px rgba(0,0,0,0.3);
+  --shadow-sm:  0 1px 4px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.2);
+  --shadow-md:  0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.3);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.3);
+  --shadow-xl:  0 20px 60px rgba(0,0,0,0.6), 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select { font-family: inherit; }
+ul { list-style: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   BACKGROUND — SVG dot pattern + radial glow
+═══════════════════════════════════════════════════════════════ */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color var(--ease), color var(--ease);
+  line-height: 1.5;
+}
+
+/* SVG dot grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23000' fill-opacity='0.045'/%3E%3C/svg%3E");
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+[data-theme="dark"] body::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23fff' fill-opacity='0.04'/%3E%3C/svg%3E");
+}
+
+/* Radial glow — top-left accent */
+body::after {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 700px;
+  height: 700px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, var(--brand-glow) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════════════════════════ */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════════════════ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 0 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 36px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.brand-logo {
+  font-family: var(--font-serif);
+  font-size: 1.65rem;
+  color: var(--text-primary);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.brand-logo span { color: var(--brand); }
+
+.brand-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 3px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Year selector in header */
+.year-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-0);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  box-shadow: var(--shadow-xs);
+}
+
+.year-selector label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.year-selector select {
+  background: transparent;
+  border: none;
+  color: var(--brand);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2px;
+}
+
+/* Compare toggle */
+.btn-compare {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--surface-0);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--ease);
+  white-space: nowrap;
+}
+
+.btn-compare:hover { border-color: var(--brand); color: var(--brand); }
+
+.btn-compare.active {
+  background: var(--brand-light);
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.btn-compare svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* Theme toggle */
+.btn-theme {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-0);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+  transition: all var(--ease);
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.btn-theme:hover { border-color: var(--border-strong); color: var(--text-primary); }
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYOUT GRID
+═══════════════════════════════════════════════════════════════ */
+.layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 820px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CARD COMPONENT
+═══════════════════════════════════════════════════════════════ */
+.card {
+  background: var(--surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: background var(--ease), border-color var(--ease), box-shadow var(--ease);
+}
+
+.card + .card { margin-top: 16px; }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+}
+
+.card-title {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.card-body { padding: 20px; }
+
+/* ═══════════════════════════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════════════════════════ */
+.field { margin-bottom: 20px; }
+.field:last-child { margin-bottom: 0; }
+
+.field-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.field-label-text {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+}
+
+.field-hint {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+
+/* Input */
+.input-group { position: relative; }
+
+.input-affix {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+  left: 13px;
+}
+
+.input-field {
+  width: 100%;
+  height: 44px;
+  background: var(--surface-1);
+  border: 1.5px solid var(--border-default);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 0 14px;
+  outline: none;
+  transition: border-color var(--ease), box-shadow var(--ease), background var(--ease);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.input-field.has-affix { padding-left: 26px; }
+
+.input-field:hover { border-color: var(--border-strong); }
+
+.input-field:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-glow);
+  background: var(--surface-0);
+}
+
+.input-field::placeholder { color: var(--text-tertiary); font-weight: 300; }
+
+/* Select */
+.select-wrapper { position: relative; }
+
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--text-tertiary);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   QUICK AMOUNTS
+═══════════════════════════════════════════════════════════════ */
+.quick-amounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.quick-btn {
+  height: 28px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  background: var(--surface-1);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  transition: all var(--ease);
+  letter-spacing: 0.02em;
+}
+
+.quick-btn:hover {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+
+.quick-btn.is-active {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: var(--brand-light);
+  font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEGMENTED CONTROLS
+═══════════════════════════════════════════════════════════════ */
+.seg-control {
+  display: flex;
+  background: var(--surface-1);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 40px;
+}
+
+.seg-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  transition: all var(--ease);
+  border-right: 1px solid var(--border-default);
+  white-space: nowrap;
+  padding: 0 8px;
+}
+
+.seg-btn:last-child { border-right: none; }
+
+.seg-btn.is-active {
+  background: var(--brand);
+  color: white;
+  font-weight: 500;
+}
+
+.seg-btn:not(.is-active):hover { background: var(--surface-2); color: var(--text-primary); }
+
+/* ═══════════════════════════════════════════════════════════════
+   PERIOD TOGGLE (Annual / Monthly)
+═══════════════════════════════════════════════════════════════ */
+.period-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+
+.period-tab {
+  flex: 1;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  border-radius: 4px;
+  transition: all var(--ease);
+  text-align: center;
+}
+
+.period-tab.is-active {
+  background: var(--surface-0);
+  color: var(--brand);
+  font-weight: 500;
+  box-shadow: var(--shadow-xs);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESULTS PANEL
+═══════════════════════════════════════════════════════════════ */
+.results-stack { display: flex; flex-direction: column; gap: 16px; }
+
+/* Hero take-home card */
+.hero-card {
+  background: var(--brand);
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 28px 28px 24px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,80,179,0.25), 0 2px 8px rgba(0,80,179,0.15);
+}
+
+[data-theme="dark"] .hero-card {
+  background: linear-gradient(135deg, #0f2a50 0%, #0d1f3c 100%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(77,159,255,0.15);
+}
+
+/* Decorative circles */
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  pointer-events: none;
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  bottom: -100px;
+  left: -40px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  pointer-events: none;
+}
+
+.hero-inner { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 8px;
+}
+
+.hero-amount {
+  font-family: var(--font-serif);
+  font-size: 3.4rem;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  transition: transform var(--ease-spring), opacity var(--ease);
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0.7;
+}
+
+.hero-meta-item {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hero-meta-item::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+}
+
+/* Metrics grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 480px) {
+  .metrics-grid { grid-template-columns: 1fr; }
+}
+
+.metric-card {
+  background: var(--surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px 13px;
+  transition: all var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  opacity: 0;
+  transition: opacity var(--ease);
+}
+
+.metric-card.--federal::before  { background: var(--warning); }
+.metric-card.--state::before    { background: var(--brand); }
+.metric-card.--total::before    { background: var(--danger); }
+.metric-card.--rate::before     { background: var(--success); }
+.metric-card.--monthly::before  { background: var(--brand-mid); }
+.metric-card.--marginal::before { background: var(--neutral); }
+
+.metric-card:hover::before { opacity: 1; }
+
+.metric-label {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  letter-spacing: 0.01em;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.--federal  .metric-dot { background: var(--warning); }
+.--state    .metric-dot { background: var(--brand); }
+.--total    .metric-dot { background: var(--danger); }
+.--rate     .metric-dot { background: var(--success); }
+.--monthly  .metric-dot { background: var(--brand-mid); }
+.--marginal .metric-dot { background: var(--neutral); }
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  transition: transform var(--ease-spring);
+}
+
+.metric-value.is-empty { color: var(--text-tertiary); font-weight: 300; }
+
+.no-tax-badge {
+  margin-top: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--success);
+  background: var(--success-bg);
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INCOME VISUALIZATION — Horizontal stacked bar
+═══════════════════════════════════════════════════════════════ */
+.alloc-card .card-body { padding: 16px 20px 20px; }
+
+.alloc-bar-container {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  overflow: hidden;
+  display: flex;
+  margin-bottom: 14px;
+  gap: 1px;
+}
+
+.alloc-seg {
+  height: 100%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 999px;
+}
+
+.alloc-seg.--federal { background: var(--warning); }
+.alloc-seg.--state   { background: var(--brand); }
+.alloc-seg.--net     { background: var(--success); flex: 1; }
+
+.alloc-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.alloc-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.alloc-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.alloc-legend-item.--federal .alloc-legend-dot { background: var(--warning); }
+.alloc-legend-item.--state   .alloc-legend-dot { background: var(--brand); }
+.alloc-legend-item.--net     .alloc-legend-dot { background: var(--success); }
+
+.alloc-legend-pct {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BRACKET BREAKDOWN TABLE
+═══════════════════════════════════════════════════════════════ */
+.bracket-table { width: 100%; border-collapse: collapse; }
+
+.bracket-table thead tr {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.bracket-table th {
+  font-family: var(--font-mono);
+  font-size: 0.63rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding: 0 0 10px;
+  text-align: left;
+}
+
+.bracket-table th:last-child { text-align: right; }
+
+.bracket-table td {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  vertical-align: middle;
+}
+
+.bracket-table tbody tr:last-child td { border-bottom: none; }
+
+.bracket-table tbody tr:hover td { background: var(--surface-1); }
+.bracket-table tbody tr:hover td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); padding-left: 8px; }
+.bracket-table tbody tr:hover td:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding-right: 8px; }
+
+.br-rate {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--brand);
+  width: 40px;
+}
+
+.br-range {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  padding-right: 12px;
+}
+
+.br-fill-wrap {
+  padding-right: 12px;
+}
+
+.br-fill-bg {
+  height: 5px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 40px;
+}
+
+.br-fill-bar {
+  height: 100%;
+  background: var(--brand);
+  border-radius: 999px;
+  opacity: 0.45;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.br-tax {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.bracket-empty {
+  padding: 20px 0;
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPARE PANEL
+═══════════════════════════════════════════════════════════════ */
+.compare-grid {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 0;
+}
+
+.compare-grid.is-visible { display: grid; }
+
+@media (max-width: 520px) {
+  .compare-grid.is-visible { grid-template-columns: 1fr; }
+}
+
+.compare-col {
+  background: var(--surface-0);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.compare-col-head {
+  padding: 12px 16px;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compare-col-head .state-tag {
+  color: var(--brand);
+}
+
+.compare-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+}
+
+.compare-row:last-child { border-bottom: none; }
+.compare-row:hover { background: var(--surface-1); }
+
+.compare-row-label { color: var(--text-secondary); }
+
+.compare-row-val {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════════════════════ */
+@keyframes pop-in {
+  0%   { transform: scale(0.96); opacity: 0.7; }
+  60%  { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-pop {
+  animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Staggered page entrance */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.header         { animation: slide-up 0.4s ease both; }
+.layout > :first-child { animation: slide-up 0.45s 0.05s ease both; }
+.layout > :last-child  { animation: slide-up 0.45s 0.10s ease both; }
+
+/* ═══════════════════════════════════════════════════════════════
+   DISCLAIMER / SOURCES
+═══════════════════════════════════════════════════════════════ */
+.sources-section {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border-subtle);
+  animation: slide-up 0.45s 0.15s ease both;
+}
+
+.sources-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.sources-title {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.sources-divider {
+  flex: 1;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.source-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.source-item-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.source-item-url {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--brand);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.source-item-url:hover { text-decoration: underline; }
+
+.disclaimer-text {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  line-height: 1.65;
+  max-width: 860px;
+}
+
+.disclaimer-text strong { color: var(--text-secondary); font-weight: 500; }
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════════════════════════════ */
+.text-empty {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.year-badge {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  background: var(--brand-light);
+  color: var(--brand);
+  border-radius: 4px;
+  border: 1px solid var(--brand);
+}
+
+/* Responsive tweaks */
+@media (max-width: 500px) {
+  .hero-amount { font-size: 2.4rem; }
+  .header-actions { gap: 6px; }
+  .btn-compare span { display: none; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-logo">Tax<span>Clarity</span></div>
+      <div class="brand-tag">US Income Tax</div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Tax Year -->
+      <div class="year-selector">
+        <label for="selectYear">Tax Year</label>
+        <select id="selectYear" aria-label="Tax year">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
+      </div>
+
+      <!-- Compare -->
+      <button class="btn-compare" id="btnCompare" aria-pressed="false">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M2 8h5M9 8h5M11 6l2 2-2 2M5 6L3 8l2 2"/>
+        </svg>
+        <span>Compare States</span>
+      </button>
+
+      <!-- Dark mode -->
+      <button class="btn-theme" id="btnTheme" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <span id="themeIcon">☾</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════
+       MAIN LAYOUT
+  ══════════════════════════════════════ -->
+  <div class="layout">
+
+    <!-- ── LEFT: INPUTS ── -->
+    <div>
+
+      <!-- Input Card -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Income Details</span>
+          <div class="period-tabs" id="periodTabs">
+            <button class="period-tab is-active" data-period="annual">Annual</button>
+            <button class="period-tab" data-period="monthly">Monthly</button>
+          </div>
+        </div>
+
+        <div class="card-body">
+
+          <!-- Annual Income -->
+          <div class="field">
+            <div class="field-label">
+              <span class="field-label-text">Annual Income</span>
+            </div>
+            <div class="input-group">
+              <span class="input-affix">$</span>
+              <input
+                type="number"
+                id="inputIncome"
+                class="input-field has-affix"
+                placeholder="0"
+                min="0"
+                max="100000000"
+                autocomplete="off"
+              />
+            </div>
+            <div class="quick-amounts" id="quickAmounts">
+              <button class="quick-btn" data-val="30000">$30k</button>
+              <button class="quick-btn" data-val="50000">$50k</button>
+              <button class="quick-btn" data-val="75000">$75k</button>
+              <button class="quick-btn" data-val="100000">$100k</button>
+              <button class="quick-btn" data-val="150000">$150k</button>
+              <button class="quick-btn" data-val="250000">$250k</button>
+            </div>
+          </div>
+
+          <!-- Filing Status -->
+          <div class="field">
+            <div class="field-label">
+              <span class="field-label-text">Filing Status</span>
+            </div>
+            <div class="seg-control" id="filingControl">
+              <button class="seg-btn is-active" data-status="single">Single</button>
+              <button class="seg-btn" data-status="married">Married Filing Jointly</button>
+            </div>
+          </div>
+
+          <!-- State -->
+          <div class="field">
+            <div class="field-label">
+              <span class="field-label-text">State</span>
+              <span class="field-hint" id="stateTaxNote"></span>
+            </div>
+            <div class="select-wrapper">
+              <select id="selectState" class="input-field" aria-label="State of residence">
+                <option value="">— Select state —</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Compare: second state (hidden by default) -->
+          <div class="field" id="compareStateWrap" style="display:none;">
+            <div class="field-label">
+              <span class="field-label-text">Compare with State</span>
+            </div>
+            <div class="select-wrapper">
+              <select id="selectState2" class="input-field" aria-label="Second state for comparison">
+                <option value="">— Select state —</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Federal Bracket Breakdown -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Federal Tax Brackets</span>
+          <span class="year-badge" id="bracketYearBadge">2026</span>
+        </div>
+        <div class="card-body" style="padding:16px 20px;">
+          <table class="bracket-table">
+            <thead>
+              <tr>
+                <th>Rate</th>
+                <th>Income Range</th>
+                <th class="br-fill-wrap" style="min-width:60px;"></th>
+                <th>Tax</th>
+              </tr>
+            </thead>
+            <tbody id="bracketTbody">
+              <tr><td colspan="4" class="bracket-empty">Enter income to see breakdown</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /left col -->
+
+    <!-- ── RIGHT: RESULTS ── -->
+    <div class="results-stack">
+
+      <!-- Hero -->
+      <div class="hero-card" id="heroCard">
+        <div class="hero-inner">
+          <div class="hero-eyebrow">Annual Take-Home Pay</div>
+          <div class="hero-amount" id="heroAmount">$—</div>
+          <div class="hero-meta" id="heroMeta">
+            <span class="hero-meta-item">Enter income to calculate</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="metrics-grid">
+        <div class="metric-card --federal">
+          <div class="metric-label">Federal Income Tax <span class="metric-dot"></span></div>
+          <div class="metric-value is-empty" id="metFederal">—</div>
+        </div>
+        <div class="metric-card --state">
+          <div class="metric-label">State Income Tax <span class="metric-dot"></span></div>
+          <div class="metric-value is-empty" id="metState">—</div>
+          <div id="noTaxBadge" style="display:none;"><span class="no-tax-badge">✓ No State Tax</span></div>
+        </div>
+        <div class="metric-card --total">
+          <div class="metric-label">Total Tax Burden <span class="metric-dot"></span></div>
+          <div class="metric-value is-empty" id="metTotal">—</div>
+        </div>
+        <div class="metric-card --rate">
+          <div class="metric-label">Effective Tax Rate <span class="metric-dot"></span></div>
+          <div class="metric-value is-empty" id="metRate">—</div>
+        </div>
+        <div class="metric-card --monthly">
+          <div class="metric-label">Monthly Take-Home <span class="metric-dot"></span></div>
+          <div class="metric-value is-empty" id="metMonthly">—</div>
+        </div>
+        <div class="metric-card --marginal">
+          <div class="metric-label">Marginal Fed Rate <span class="metric-dot"></span></div>
+          <div class="metric-value is-empty" id="metMarginal">—</div>
+        </div>
+      </div>
+
+      <!-- Income Allocation Bar -->
+      <div class="card alloc-card">
+        <div class="card-header">
+          <span class="card-title">Income Allocation</span>
+        </div>
+        <div class="card-body">
+          <div class="alloc-bar-container">
+            <div class="alloc-seg --federal" id="allocFed" style="width:0%;"></div>
+            <div class="alloc-seg --state"   id="allocState" style="width:0%;"></div>
+            <div class="alloc-seg --net"     id="allocNet" style="width:0%;"></div>
+          </div>
+          <div class="alloc-legend">
+            <div class="alloc-legend-item --federal">
+              <div class="alloc-legend-dot"></div>
+              Federal Tax <strong class="alloc-legend-pct" id="legFed">—%</strong>
+            </div>
+            <div class="alloc-legend-item --state">
+              <div class="alloc-legend-dot"></div>
+              State Tax <strong class="alloc-legend-pct" id="legState">—%</strong>
+            </div>
+            <div class="alloc-legend-item --net">
+              <div class="alloc-legend-dot"></div>
+              Net Income <strong class="alloc-legend-pct" id="legNet">—%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Compare Panel -->
+      <div class="compare-grid" id="compareGrid">
+        <div class="compare-col" id="compareCol1"></div>
+        <div class="compare-col" id="compareCol2"></div>
+      </div>
+
+    </div><!-- /results stack -->
+  </div><!-- /layout -->
+
+  <!-- ══════════════════════════════════════
+       SOURCES & DISCLAIMER
+  ══════════════════════════════════════ -->
+  <section class="sources-section" aria-label="Tax data sources and disclaimer">
+    <div class="sources-header">
+      <span class="sources-title">Data Sources & Disclaimer</span>
+      <div class="sources-divider"></div>
+    </div>
+
+    <div class="sources-grid">
+      <div class="source-item">
+        <span class="source-item-name">IRS — Federal Tax Brackets & Standard Deductions</span>
+        <a class="source-item-url" href="https://www.irs.gov/newsroom/irs-releases-tax-inflation-adjustments-for-tax-year-2026" target="_blank" rel="noopener">irs.gov — Rev. Proc. 2025-XX (2026) / 2026-XX (2027)</a>
+      </div>
+      <div class="source-item">
+        <span class="source-item-name">IRS Publication 505 — Tax Withholding & Estimated Tax</span>
+        <a class="source-item-url" href="https://www.irs.gov/publications/p505" target="_blank" rel="noopener">irs.gov/publications/p505</a>
+      </div>
+      <div class="source-item">
+        <span class="source-item-name">State Revenue Departments — State Income Tax Brackets</span>
+        <a class="source-item-url" href="https://taxfoundation.org/research/all/state/state-income-tax-rates/" target="_blank" rel="noopener">taxfoundation.org — State Income Tax Rates (annual)</a>
+      </div>
+      <div class="source-item">
+        <span class="source-item-name">Tax Foundation — Annual State Tax Rate Reference</span>
+        <a class="source-item-url" href="https://taxfoundation.org/taxedu/glossary/marginal-tax-rate/" target="_blank" rel="noopener">taxfoundation.org/taxedu</a>
+      </div>
+    </div>
+
+    <p class="disclaimer-text">
+      <strong>Disclaimer:</strong> TaxClarity provides estimates for educational purposes based on projected federal income tax brackets and simplified state income tax schedules. These figures do <strong>not</strong> account for FICA taxes (Social Security 6.2% / Medicare 1.45%), the Alternative Minimum Tax (AMT), itemized deductions, tax credits, local/city income taxes, capital gains rates, self-employment tax, or other adjustments. Forward-year brackets (2026, 2027) are based on IRS inflation-adjustment methodology (IRC §1(f)) and tax foundation projections — <strong>official IRS announcements take precedence</strong>. Always consult a qualified tax professional or CPA for tax planning decisions.
+    </p>
+  </section>
+
+</div><!-- /app -->
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   ╔════════════════════════════════════════════════════════════════╗
+   ║  MODULE 1: TAX DATA                                           ║
+   ║  Structured by year → filing status → brackets               ║
+   ║  Easy to add 2028+ by copying the 2027 block and updating     ║
+   ╚════════════════════════════════════════════════════════════════╝
+═══════════════════════════════════════════════════════════════════ */
+
+/**
+ * FEDERAL TAX DATA
+ * Source: IRS Rev. Proc. annual inflation adjustments (IRC §1(f))
+ * Format: { standardDeduction: {single, married}, brackets: {single: [[min,max,rate], ...], married: [...]}}
+ * Note: 2026/2027 are projected based on ~2.5-3% annual CPI adjustments
+ */
+const FEDERAL = {
+  2025: {
+    standardDeduction: { single: 15000, married: 30000 },
+    brackets: {
+      single: [
+        [0,       11925,   0.10],
+        [11925,   48475,   0.12],
+        [48475,   103350,  0.22],
+        [103350,  197300,  0.24],
+        [197300,  250525,  0.32],
+        [250525,  626350,  0.35],
+        [626350,  Infinity, 0.37]
+      ],
+      married: [
+        [0,       23850,   0.10],
+        [23850,   96950,   0.12],
+        [96950,   206700,  0.22],
+        [206700,  394600,  0.24],
+        [394600,  501050,  0.32],
+        [501050,  751600,  0.35],
+        [751600,  Infinity, 0.37]
+      ]
+    }
+  },
+  2026: {
+    standardDeduction: { single: 15700, married: 31400 },
+    brackets: {
+      single: [
+        [0,       12300,   0.10],
+        [12300,   49900,   0.12],
+        [49900,   106450,  0.22],
+        [106450,  203050,  0.24],
+        [203050,  257900,  0.32],
+        [257900,  644500,  0.35],
+        [644500,  Infinity, 0.37]
+      ],
+      married: [
+        [0,       24600,   0.10],
+        [24600,   99800,   0.12],
+        [99800,   212900,  0.22],
+        [212900,  406100,  0.24],
+        [406100,  515800,  0.32],
+        [515800,  774000,  0.35],
+        [774000,  Infinity, 0.37]
+      ]
+    }
+  },
+  2027: {
+    standardDeduction: { single: 16200, married: 32400 },
+    brackets: {
+      single: [
+        [0,       12700,   0.10],
+        [12700,   51500,   0.12],
+        [51500,   109700,  0.22],
+        [109700,  209300,  0.24],
+        [209300,  265800,  0.32],
+        [265800,  664200,  0.35],
+        [664200,  Infinity, 0.37]
+      ],
+      married: [
+        [0,       25400,   0.10],
+        [25400,   103000,  0.12],
+        [103000,  219400,  0.22],
+        [219400,  418600,  0.24],
+        [418600,  531600,  0.32],
+        [531600,  797100,  0.35],
+        [797100,  Infinity, 0.37]
+      ]
+    }
+  }
+};
+
+/**
+ * STATE TAX DATA
+ * Each state entry:
+ *   noTax: true           → no state income tax
+ *   flat: 0.0XX           → flat rate on all income
+ *   brackets: {           → progressive brackets
+ *     single:  [[min, max, rate], ...],
+ *     married: [[min, max, rate], ...]
+ *   }
+ *   stdDed: {single, married}  → state standard deduction (0 if none)
+ *
+ * Sources: State Revenue Dept publications, Tax Foundation 2025 data
+ * State brackets are applied consistently across 2025-2027 (many states
+ * have permanent rates; where indexed, 2025 figures are used as baseline)
+ */
+const STATES = {
+  "AL": { name:"Alabama",            brackets:{ single:[[0,500,0.02],[500,3000,0.04],[3000,Infinity,0.05]], married:[[0,1000,0.02],[1000,6000,0.04],[6000,Infinity,0.05]] }, stdDed:{single:3000,married:8500} },
+  "AK": { name:"Alaska",             noTax:true },
+  "AZ": { name:"Arizona",            flat:0.025 },
+  "AR": { name:"Arkansas",           brackets:{ single:[[0,5000,0.02],[5000,10000,0.04],[10000,Infinity,0.047]], married:[[0,5000,0.02],[5000,10000,0.04],[10000,Infinity,0.047]] }, stdDed:{single:2200,married:4400} },
+  "CA": { name:"California",         brackets:{ single:[[0,10756,0.01],[10756,25499,0.02],[25499,40245,0.04],[40245,55866,0.06],[55866,70606,0.08],[70606,360659,0.093],[360659,432787,0.103],[432787,721314,0.113],[721314,Infinity,0.133]], married:[[0,21512,0.01],[21512,50998,0.02],[50998,80490,0.04],[80490,111732,0.06],[111732,141212,0.08],[141212,721318,0.093],[721318,865574,0.103],[865574,Infinity,0.123]] }, stdDed:{single:5540,married:11080} },
+  "CO": { name:"Colorado",           flat:0.044 },
+  "CT": { name:"Connecticut",        brackets:{ single:[[0,10000,0.03],[10000,50000,0.05],[50000,100000,0.055],[100000,200000,0.06],[200000,250000,0.065],[250000,500000,0.069],[500000,Infinity,0.0699]], married:[[0,20000,0.03],[20000,100000,0.05],[100000,200000,0.055],[200000,400000,0.06],[400000,500000,0.065],[500000,1000000,0.069],[1000000,Infinity,0.0699]] }, stdDed:{single:0,married:0} },
+  "DE": { name:"Delaware",           brackets:{ single:[[0,2000,0],[2000,5000,0.022],[5000,10000,0.039],[10000,20000,0.048],[20000,25000,0.052],[25000,60000,0.0555],[60000,Infinity,0.066]], married:[[0,2000,0],[2000,5000,0.022],[5000,10000,0.039],[10000,20000,0.048],[20000,25000,0.052],[25000,60000,0.0555],[60000,Infinity,0.066]] }, stdDed:{single:3250,married:6500} },
+  "FL": { name:"Florida",            noTax:true },
+  "GA": { name:"Georgia",            flat:0.0549 },
+  "HI": { name:"Hawaii",             brackets:{ single:[[0,2400,0.014],[2400,4800,0.032],[4800,9600,0.055],[9600,14400,0.064],[14400,19200,0.068],[19200,24000,0.072],[24000,36000,0.076],[36000,48000,0.079],[48000,150000,0.0825],[150000,175000,0.09],[175000,200000,0.10],[200000,Infinity,0.11]], married:[[0,4800,0.014],[4800,9600,0.032],[9600,19200,0.055],[19200,28800,0.064],[28800,38400,0.068],[38400,48000,0.072],[48000,72000,0.076],[72000,96000,0.079],[96000,300000,0.0825],[300000,350000,0.09],[350000,400000,0.10],[400000,Infinity,0.11]] }, stdDed:{single:2200,married:4400} },
+  "ID": { name:"Idaho",              flat:0.058 },
+  "IL": { name:"Illinois",           flat:0.0495 },
+  "IN": { name:"Indiana",            flat:0.0305 },
+  "IA": { name:"Iowa",               flat:0.057 },
+  "KS": { name:"Kansas",             brackets:{ single:[[0,15000,0.031],[15000,30000,0.0525],[30000,Infinity,0.057]], married:[[0,30000,0.031],[30000,60000,0.0525],[60000,Infinity,0.057]] }, stdDed:{single:3500,married:8000} },
+  "KY": { name:"Kentucky",           flat:0.04 },
+  "LA": { name:"Louisiana",          brackets:{ single:[[0,12500,0.02],[12500,50000,0.04],[50000,Infinity,0.06]], married:[[0,25000,0.02],[25000,100000,0.04],[100000,Infinity,0.06]] }, stdDed:{single:4500,married:9000} },
+  "ME": { name:"Maine",              brackets:{ single:[[0,26050,0.058],[26050,61600,0.0675],[61600,Infinity,0.0715]], married:[[0,52100,0.058],[52100,123200,0.0675],[123200,Infinity,0.0715]] }, stdDed:{single:15000,married:30000} },
+  "MD": { name:"Maryland",           brackets:{ single:[[0,1000,0.02],[1000,2000,0.03],[2000,3000,0.04],[3000,100000,0.0475],[100000,125000,0.05],[125000,150000,0.0525],[150000,250000,0.055],[250000,Infinity,0.0575]], married:[[0,1000,0.02],[1000,2000,0.03],[2000,3000,0.04],[3000,150000,0.0475],[150000,175000,0.05],[175000,225000,0.0525],[225000,300000,0.055],[300000,Infinity,0.0575]] }, stdDed:{single:2400,married:4850} },
+  "MA": { name:"Massachusetts",      flat:0.05 },
+  "MI": { name:"Michigan",           flat:0.0425 },
+  "MN": { name:"Minnesota",          brackets:{ single:[[0,32570,0.0535],[32570,106990,0.068],[106990,198630,0.0785],[198630,Infinity,0.0985]], married:[[0,47630,0.0535],[47630,189420,0.068],[189420,330780,0.0785],[330780,Infinity,0.0985]] }, stdDed:{single:14950,married:29900} },
+  "MS": { name:"Mississippi",        flat:0.04 },
+  "MO": { name:"Missouri",           brackets:{ single:[[0,1200,0],[1200,2400,0.015],[2400,3600,0.02],[3600,4800,0.025],[4800,6000,0.03],[6000,7200,0.035],[7200,8400,0.04],[8400,9600,0.045],[9600,Infinity,0.048]], married:[[0,1200,0],[1200,2400,0.015],[2400,3600,0.02],[3600,4800,0.025],[4800,6000,0.03],[6000,7200,0.035],[7200,8400,0.04],[8400,9600,0.045],[9600,Infinity,0.048]] }, stdDed:{single:13000,married:26000} },
+  "MT": { name:"Montana",            brackets:{ single:[[0,3700,0.01],[3700,6400,0.02],[6400,9900,0.03],[9900,13300,0.04],[13300,17200,0.05],[17200,22100,0.06],[22100,Infinity,0.068]], married:[[0,3700,0.01],[3700,6400,0.02],[6400,9900,0.03],[9900,13300,0.04],[13300,17200,0.05],[17200,22100,0.06],[22100,Infinity,0.068]] }, stdDed:{single:5690,married:11380} },
+  "NE": { name:"Nebraska",           brackets:{ single:[[0,3700,0.0246],[3700,22170,0.0351],[22170,35730,0.0501],[35730,Infinity,0.0664]], married:[[0,7390,0.0246],[7390,44350,0.0351],[44350,71470,0.0501],[71470,Infinity,0.0664]] }, stdDed:{single:7900,married:15800} },
+  "NV": { name:"Nevada",             noTax:true },
+  "NH": { name:"New Hampshire",      noTax:true },
+  "NJ": { name:"New Jersey",         brackets:{ single:[[0,20000,0.014],[20000,35000,0.0175],[35000,40000,0.035],[40000,75000,0.0553],[75000,500000,0.0637],[500000,1000000,0.0897],[1000000,Infinity,0.1075]], married:[[0,20000,0.014],[20000,50000,0.0175],[50000,70000,0.0245],[70000,80000,0.035],[80000,150000,0.0553],[150000,500000,0.0637],[500000,1000000,0.0897],[1000000,Infinity,0.1075]] }, stdDed:{single:0,married:0} },
+  "NM": { name:"New Mexico",         brackets:{ single:[[0,5500,0.015],[5500,11000,0.032],[11000,16000,0.047],[16000,210000,0.049],[210000,Infinity,0.059]], married:[[0,8000,0.015],[8000,16000,0.032],[16000,24000,0.047],[24000,315000,0.049],[315000,Infinity,0.059]] }, stdDed:{single:13000,married:26000} },
+  "NY": { name:"New York",           brackets:{ single:[[0,17650,0.04],[17650,24300,0.045],[24300,28750,0.0525],[28750,166200,0.055],[166200,332900,0.06],[332900,2155350,0.0685],[2155350,5000000,0.0965],[5000000,25000000,0.103],[25000000,Infinity,0.109]], married:[[0,28750,0.04],[28750,44250,0.045],[44250,166200,0.0525],[166200,332900,0.059],[332900,2155350,0.0685],[2155350,5000000,0.0965],[5000000,25000000,0.103],[25000000,Infinity,0.109]] }, stdDed:{single:8500,married:17050} },
+  "NC": { name:"North Carolina",     flat:0.0475 },
+  "ND": { name:"North Dakota",       brackets:{ single:[[0,44725,0.011],[44725,225975,0.0204],[225975,Infinity,0.029]], married:[[0,74750,0.011],[74750,275100,0.0204],[275100,Infinity,0.029]] }, stdDed:{single:15000,married:30000} },
+  "OH": { name:"Ohio",               brackets:{ single:[[0,26050,0],[26050,100000,0.0275],[100000,Infinity,0.035]], married:[[0,26050,0],[26050,100000,0.0275],[100000,Infinity,0.035]] }, stdDed:{single:0,married:0} },
+  "OK": { name:"Oklahoma",           brackets:{ single:[[0,1000,0.0025],[1000,2500,0.0075],[2500,3750,0.0175],[3750,4900,0.0275],[4900,7200,0.0375],[7200,Infinity,0.045]], married:[[0,2000,0.0025],[2000,5000,0.0075],[5000,7500,0.0175],[7500,9800,0.0275],[9800,12200,0.0375],[12200,Infinity,0.045]] }, stdDed:{single:6350,married:12700} },
+  "OR": { name:"Oregon",             brackets:{ single:[[0,18400,0.0475],[18400,46200,0.0675],[46200,250000,0.0875],[250000,Infinity,0.099]], married:[[0,18400,0.0475],[18400,46200,0.0675],[46200,250000,0.0875],[250000,Infinity,0.099]] }, stdDed:{single:2420,married:4850} },
+  "PA": { name:"Pennsylvania",       flat:0.0307 },
+  "RI": { name:"Rhode Island",       brackets:{ single:[[0,77450,0.0375],[77450,176050,0.0475],[176050,Infinity,0.0599]], married:[[0,154900,0.0375],[154900,352100,0.0475],[352100,Infinity,0.0599]] }, stdDed:{single:10550,married:21150} },
+  "SC": { name:"South Carolina",     brackets:{ single:[[0,3460,0],[3460,16040,0.03],[16040,Infinity,0.064]], married:[[0,3460,0],[3460,16040,0.03],[16040,Infinity,0.064]] }, stdDed:{single:15000,married:30000} },
+  "SD": { name:"South Dakota",       noTax:true },
+  "TN": { name:"Tennessee",          noTax:true },
+  "TX": { name:"Texas",              noTax:true },
+  "UT": { name:"Utah",               flat:0.0465 },
+  "VT": { name:"Vermont",            brackets:{ single:[[0,45400,0.0335],[45400,110050,0.066],[110050,229550,0.076],[229550,Infinity,0.0875]], married:[[0,75850,0.0335],[75850,183400,0.066],[183400,236350,0.076],[236350,Infinity,0.0875]] }, stdDed:{single:6500,married:13000} },
+  "VA": { name:"Virginia",           brackets:{ single:[[0,3000,0.02],[3000,5000,0.03],[5000,17000,0.05],[17000,Infinity,0.0575]], married:[[0,3000,0.02],[3000,5000,0.03],[5000,17000,0.05],[17000,Infinity,0.0575]] }, stdDed:{single:8000,married:16000} },
+  "WA": { name:"Washington",         noTax:true },
+  "WV": { name:"West Virginia",      brackets:{ single:[[0,10000,0.0236],[10000,25000,0.032],[25000,40000,0.0454],[40000,60000,0.06],[60000,Infinity,0.065]], married:[[0,10000,0.0236],[10000,25000,0.032],[25000,40000,0.0454],[40000,60000,0.06],[60000,Infinity,0.065]] }, stdDed:{single:0,married:0} },
+  "WI": { name:"Wisconsin",          brackets:{ single:[[0,14320,0.035],[14320,28640,0.044],[28640,315310,0.053],[315310,Infinity,0.0765]], married:[[0,19090,0.035],[19090,38190,0.044],[38190,420420,0.053],[420420,Infinity,0.0765]] }, stdDed:{single:12760,married:23620} },
+  "WY": { name:"Wyoming",            noTax:true },
+  "DC": { name:"D.C.",               brackets:{ single:[[0,10000,0.04],[10000,40000,0.06],[40000,60000,0.065],[60000,250000,0.085],[250000,500000,0.0925],[500000,1000000,0.0975],[1000000,Infinity,0.1075]], married:[[0,10000,0.04],[10000,40000,0.06],[40000,60000,0.065],[60000,250000,0.085],[250000,500000,0.0925],[500000,1000000,0.0975],[1000000,Infinity,0.1075]] }, stdDed:{single:13000,married:26000} }
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ╔════════════════════════════════════════════════════════════════╗
+   ║  MODULE 2: TAX ENGINE (pure functions, no DOM)                ║
+   ╚════════════════════════════════════════════════════════════════╝
+═══════════════════════════════════════════════════════════════════ */
+
+/**
+ * Applies progressive brackets to a taxable income amount.
+ * @param {number} income   - Post-deduction taxable income
+ * @param {Array}  brackets - [[min, max, rate], ...]
+ * @returns {{ total: number, breakdown: Array, marginal: number }}
+ */
+function applyBrackets(income, brackets) {
+  let total    = 0;
+  let marginal = 0;
+  const breakdown = [];
+
+  for (const [min, max, rate] of brackets) {
+    if (income <= min) break;
+    const taxableSlice = Math.min(income, max) - min;
+    const taxThisBracket = taxableSlice * rate;
+    total    += taxThisBracket;
+    marginal  = rate;
+    if (taxThisBracket > 0) {
+      breakdown.push({ min, max, rate, taxable: taxableSlice, tax: taxThisBracket });
+    }
+  }
+
+  return { total, breakdown, marginal };
+}
+
+/**
+ * Calculates federal income tax for a given year and filing status.
+ * @param {number} gross       - Gross annual income
+ * @param {string} filing      - 'single' | 'married'
+ * @param {number} year        - Tax year (2025–2027)
+ */
+function calcFederal(gross, filing, year) {
+  const yearData   = FEDERAL[year] || FEDERAL[2026];
+  const deduction  = yearData.standardDeduction[filing];
+  const taxable    = Math.max(0, gross - deduction);
+  const brackets   = yearData.brackets[filing];
+  const result     = applyBrackets(taxable, brackets);
+
+  return { ...result, taxable, deduction };
+}
+
+/**
+ * Calculates state income tax.
+ * @param {number} gross   - Gross annual income
+ * @param {string} code    - State abbreviation ('CA', 'TX', etc.)
+ * @param {string} filing  - 'single' | 'married'
+ */
+function calcState(gross, code, filing) {
+  const s = STATES[code];
+  if (!s) return { total: 0, noTax: false, breakdown: [], marginal: 0 };
+
+  if (s.noTax)  return { total: 0, noTax: true,  breakdown: [], marginal: 0 };
+  if (s.flat)   return { total: gross * s.flat, noTax: false, flat: true, rate: s.flat, breakdown: [], marginal: s.flat };
+
+  const deduction = (s.stdDed?.[filing]) || 0;
+  const taxable   = Math.max(0, gross - deduction);
+  const result    = applyBrackets(taxable, s.brackets[filing]);
+
+  return { ...result, noTax: false, taxable, deduction };
+}
+
+/**
+ * Master calculation — returns complete tax summary.
+ * @returns {Object|null}
+ */
+function computeTaxes(gross, filing, stateCode, year) {
+  if (!gross || gross <= 0) return null;
+
+  const federal    = calcFederal(gross, filing, year);
+  const state      = stateCode ? calcState(gross, stateCode, filing) : { total: 0, noTax: false, breakdown: [] };
+  const totalTax   = federal.total + state.total;
+  const netAnnual  = gross - totalTax;
+  const effectRate = totalTax / gross;
+  const monthly    = netAnnual / 12;
+
+  return { gross, filing, stateCode, year, federal, state, totalTax, netAnnual, effectRate, monthly };
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ╔════════════════════════════════════════════════════════════════╗
+   ║  MODULE 3: FORMATTERS                                         ║
+   ╚════════════════════════════════════════════════════════════════╝
+═══════════════════════════════════════════════════════════════════ */
+
+const fmt = {
+  /** Format as USD currency, optionally compact ($85k) */
+  usd(n, compact = false) {
+    if (compact && Math.abs(n) >= 1000) {
+      return '$' + (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency', currency: 'USD',
+      minimumFractionDigits: 0, maximumFractionDigits: 0
+    }).format(n);
+  },
+  /** Format as percentage with 2 decimal places */
+  pct(n)      { return (n * 100).toFixed(2) + '%'; },
+  /** Format as percentage with 1 decimal place */
+  pct1(n)     { return (n * 100).toFixed(1) + '%'; },
+  /** Format as integer percentage */
+  pct0(n)     { return Math.round(n * 100) + '%'; },
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   ╔════════════════════════════════════════════════════════════════╗
+   ║  MODULE 4: UI ENGINE                                          ║
+   ╚════════════════════════════════════════════════════════════════╝
+═══════════════════════════════════════════════════════════════════ */
+
+// ── Application state ──────────────────────────────────────────
+const state = {
+  income:    0,
+  filing:    'single',
+  stateCode: '',
+  state2:    '',
+  year:      2026,
+  period:    'annual',
+  compare:   false,
+};
+
+// ── DOM element cache ───────────────────────────────────────────
+const el = {
+  income:       document.getElementById('inputIncome'),
+  stateSelect:  document.getElementById('selectState'),
+  state2Select: document.getElementById('selectState2'),
+  yearSelect:   document.getElementById('selectYear'),
+  heroAmount:   document.getElementById('heroAmount'),
+  heroMeta:     document.getElementById('heroMeta'),
+  metFederal:   document.getElementById('metFederal'),
+  metState:     document.getElementById('metState'),
+  metTotal:     document.getElementById('metTotal'),
+  metRate:      document.getElementById('metRate'),
+  metMonthly:   document.getElementById('metMonthly'),
+  metMarginal:  document.getElementById('metMarginal'),
+  noTaxBadge:   document.getElementById('noTaxBadge'),
+  bracketTbody: document.getElementById('bracketTbody'),
+  bracketYearBadge: document.getElementById('bracketYearBadge'),
+  allocFed:     document.getElementById('allocFed'),
+  allocState:   document.getElementById('allocState'),
+  allocNet:     document.getElementById('allocNet'),
+  legFed:       document.getElementById('legFed'),
+  legState:     document.getElementById('legState'),
+  legNet:       document.getElementById('legNet'),
+  compareGrid:  document.getElementById('compareGrid'),
+  compareCol1:  document.getElementById('compareCol1'),
+  compareCol2:  document.getElementById('compareCol2'),
+  compareWrap:  document.getElementById('compareStateWrap'),
+  stateTaxNote: document.getElementById('stateTaxNote'),
+  btnCompare:   document.getElementById('btnCompare'),
+  btnTheme:     document.getElementById('btnTheme'),
+  themeIcon:    document.getElementById('themeIcon'),
+};
+
+// ── Populate dropdowns ─────────────────────────────────────────
+function initDropdowns() {
+  const sorted = Object.entries(STATES)
+    .sort(([, a], [, b]) => a.name.localeCompare(b.name));
+
+  for (const select of [el.stateSelect, el.state2Select]) {
+    sorted.forEach(([code, s]) => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = s.noTax ? `${s.name} ★ No Tax` : s.name;
+      select.appendChild(opt);
+    });
+  }
+}
+
+// ── Animate a value update ─────────────────────────────────────
+function animVal(domEl) {
+  domEl.classList.remove('animate-pop');
+  void domEl.offsetWidth;
+  domEl.classList.add('animate-pop');
+}
+
+// ── Set metric value with animation ───────────────────────────
+function setMetric(domEl, value, isEmpty = false) {
+  domEl.textContent = value;
+  domEl.classList.toggle('is-empty', isEmpty);
+  animVal(domEl);
+}
+
+// ── Render hero block ──────────────────────────────────────────
+function renderHero(result) {
+  if (!result) {
+    el.heroAmount.textContent = '$—';
+    el.heroMeta.innerHTML = '<span class="hero-meta-item">Enter income to calculate</span>';
+    return;
+  }
+
+  const { gross, netAnnual, monthly, effectRate, state, federal } = result;
+  const isAnnual = state.period !== 'monthly';
+  const displayVal = isAnnual ? netAnnual : monthly;
+
+  el.heroAmount.textContent = fmt.usd(displayVal);
+  animVal(el.heroAmount);
+
+  const stateLabel = state.noTax
+    ? 'No State Tax'
+    : `State: ${fmt.usd(state.total / 12)}/mo`;
+
+  el.heroMeta.innerHTML = `
+    <span class="hero-meta-item">${fmt.pct(effectRate)} effective rate</span>
+    <span class="hero-meta-item">${fmt.usd(monthly)}/mo</span>
+    <span class="hero-meta-item">${stateLabel}</span>
+  `;
+}
+
+// ── Render metrics grid ────────────────────────────────────────
+function renderMetrics(result) {
+  if (!result) {
+    [el.metFederal, el.metState, el.metTotal, el.metRate, el.metMonthly, el.metMarginal]
+      .forEach(e => { e.textContent = '—'; e.classList.add('is-empty'); });
+    el.noTaxBadge.style.display = 'none';
+    return;
+  }
+
+  const { federal, state: stateR, totalTax, netAnnual, effectRate, monthly } = result;
+  const mul = state.period === 'annual' ? 1 : 1 / 12;
+
+  setMetric(el.metFederal, fmt.usd(federal.total * mul));
+  setMetric(el.metTotal,   fmt.usd(totalTax * mul));
+  setMetric(el.metRate,    fmt.pct(effectRate));
+  setMetric(el.metMonthly, fmt.usd(monthly));
+  setMetric(el.metMarginal, fmt.pct0(federal.marginal));
+
+  if (stateR.noTax) {
+    setMetric(el.metState, '$0');
+    el.noTaxBadge.style.display = 'block';
+  } else {
+    setMetric(el.metState, fmt.usd(stateR.total * mul));
+    el.noTaxBadge.style.display = 'none';
+  }
+}
+
+// ── Render allocation bar ──────────────────────────────────────
+function renderAlloc(result) {
+  if (!result || !result.gross) {
+    el.allocFed.style.width   = '0%';
+    el.allocState.style.width = '0%';
+    el.allocNet.style.width   = '0%';
+    el.legFed.textContent = el.legState.textContent = el.legNet.textContent = '—%';
+    return;
+  }
+
+  const { gross, federal, state: stateR, netAnnual } = result;
+  const pFed   = (federal.total / gross * 100).toFixed(1);
+  const pState = (stateR.total  / gross * 100).toFixed(1);
+  const pNet   = (netAnnual     / gross * 100).toFixed(1);
+
+  el.allocFed.style.width   = pFed + '%';
+  el.allocState.style.width = pState + '%';
+  // net takes remaining flex space automatically
+
+  el.legFed.textContent   = pFed + '%';
+  el.legState.textContent = pState + '%';
+  el.legNet.textContent   = pNet + '%';
+}
+
+// ── Render bracket table ───────────────────────────────────────
+function renderBrackets(result) {
+  el.bracketYearBadge.textContent = state.year;
+
+  if (!result || !result.federal.breakdown?.length) {
+    el.bracketTbody.innerHTML =
+      '<tr><td colspan="4" class="bracket-empty">Enter income to see federal bracket breakdown</td></tr>';
+    return;
+  }
+
+  const maxTax = Math.max(...result.federal.breakdown.map(b => b.tax));
+
+  el.bracketTbody.innerHTML = result.federal.breakdown.map(b => {
+    const pct   = maxTax > 0 ? (b.tax / maxTax * 100).toFixed(1) : 0;
+    const maxLbl = isFinite(b.max) ? fmt.usd(b.max, true) : '∞';
+    return `
+      <tr>
+        <td class="br-rate">${Math.round(b.rate * 100)}%</td>
+        <td class="br-range">${fmt.usd(b.min, true)} – ${maxLbl}</td>
+        <td class="br-fill-wrap">
+          <div class="br-fill-bg"><div class="br-fill-bar" style="width:${pct}%"></div></div>
+        </td>
+        <td class="br-tax">${fmt.usd(b.tax)}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ── Render compare panel ───────────────────────────────────────
+function renderCompare() {
+  if (!state.compare || !state.income) {
+    el.compareGrid.classList.remove('is-visible');
+    return;
+  }
+
+  el.compareGrid.classList.add('is-visible');
+
+  const pairs = [
+    { code: state.stateCode, col: el.compareCol1, label: '① ' },
+    { code: state.state2,    col: el.compareCol2, label: '② ' },
+  ];
+
+  pairs.forEach(({ code, col, label }) => {
+    if (!code) {
+      col.innerHTML = `
+        <div class="compare-col-head">Select a state above</div>
+        <div class="compare-row"><span class="text-empty">No state selected</span></div>`;
+      return;
+    }
+
+    const r     = computeTaxes(state.income, state.filing, code, state.year);
+    const sName = STATES[code]?.name || code;
+
+    col.innerHTML = `
+      <div class="compare-col-head">
+        ${label}<span class="state-tag">${sName}</span>
+        ${STATES[code]?.noTax ? ' · ★ No Tax' : ''}
+      </div>
+      <div class="compare-row"><span class="compare-row-label">Federal Tax</span>    <span class="compare-row-val">${fmt.usd(r.federal.total)}</span></div>
+      <div class="compare-row"><span class="compare-row-label">State Tax</span>      <span class="compare-row-val">${r.state.noTax ? '$0 ✓' : fmt.usd(r.state.total)}</span></div>
+      <div class="compare-row"><span class="compare-row-label">Total Tax</span>      <span class="compare-row-val">${fmt.usd(r.totalTax)}</span></div>
+      <div class="compare-row"><span class="compare-row-label">Effective Rate</span> <span class="compare-row-val">${fmt.pct(r.effectRate)}</span></div>
+      <div class="compare-row"><span class="compare-row-label">Net Annual</span>     <span class="compare-row-val">${fmt.usd(r.netAnnual)}</span></div>
+      <div class="compare-row"><span class="compare-row-label">Monthly Take-Home</span> <span class="compare-row-val">${fmt.usd(r.monthly)}</span></div>`;
+  });
+}
+
+// ── Update state tax note in label ─────────────────────────────
+function updateStateTaxNote() {
+  const s = STATES[state.stateCode];
+  if (!s) { el.stateTaxNote.textContent = ''; return; }
+
+  if (s.noTax) {
+    el.stateTaxNote.textContent = '★ No income tax';
+    el.stateTaxNote.style.color = 'var(--success)';
+  } else if (s.flat) {
+    el.stateTaxNote.textContent = `Flat ${fmt.pct0(s.flat)} rate`;
+    el.stateTaxNote.style.color = 'var(--text-tertiary)';
+  } else {
+    el.stateTaxNote.textContent = 'Progressive brackets';
+    el.stateTaxNote.style.color = 'var(--text-tertiary)';
+  }
+}
+
+// ── Master recalculate & render ────────────────────────────────
+function recalculate() {
+  const result = computeTaxes(state.income, state.filing, state.stateCode, state.year);
+  // Attach period to result for hero rendering
+  if (result) result.state.period = state.period;
+
+  renderHero(result);
+  renderMetrics(result);
+  renderAlloc(result);
+  renderBrackets(result);
+  renderCompare();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ╔════════════════════════════════════════════════════════════════╗
+   ║  MODULE 5: EVENT BINDING                                      ║
+   ╚════════════════════════════════════════════════════════════════╝
+═══════════════════════════════════════════════════════════════════ */
+
+// Income input
+el.income.addEventListener('input', () => {
+  state.income = parseFloat(el.income.value) || 0;
+  document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.classList.toggle('is-active', +btn.dataset.val === state.income);
+  });
+  recalculate();
+});
+
+// Quick amount buttons
+document.getElementById('quickAmounts').addEventListener('click', e => {
+  const btn = e.target.closest('.quick-btn');
+  if (!btn) return;
+  state.income      = +btn.dataset.val;
+  el.income.value   = state.income;
+  document.querySelectorAll('.quick-btn').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+  recalculate();
+});
+
+// Filing status
+document.getElementById('filingControl').addEventListener('click', e => {
+  const btn = e.target.closest('.seg-btn');
+  if (!btn) return;
+  document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('is-active'));
+  btn.classList.add('is-active');
+  state.filing = btn.dataset.status;
+  recalculate();
+});
+
+// State select
+el.stateSelect.addEventListener('change', () => {
+  state.stateCode = el.stateSelect.value;
+  updateStateTaxNote();
+  recalculate();
+});
+
+// State 2 select (compare)
+el.state2Select.addEventListener('change', () => {
+  state.state2 = el.state2Select.value;
+  renderCompare();
+});
+
+// Tax year select — triggers full recalc with new year's brackets
+el.yearSelect.addEventListener('change', () => {
+  state.year = +el.yearSelect.value;
+  recalculate();
+});
+
+// Period toggle (Annual / Monthly)
+document.getElementById('periodTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.period-tab');
+  if (!tab) return;
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('is-active'));
+  tab.classList.add('is-active');
+  state.period = tab.dataset.period;
+  // Also update hero eyebrow label
+  document.querySelector('.hero-eyebrow').textContent =
+    state.period === 'annual' ? 'Annual Take-Home Pay' : 'Monthly Take-Home Pay';
+  recalculate();
+});
+
+// Compare toggle
+el.btnCompare.addEventListener('click', () => {
+  state.compare = !state.compare;
+  el.btnCompare.classList.toggle('active', state.compare);
+  el.btnCompare.setAttribute('aria-pressed', state.compare);
+  el.compareWrap.style.display = state.compare ? 'block' : 'none';
+  renderCompare();
+});
+
+// Dark mode toggle
+el.btnTheme.addEventListener('click', () => {
+  const isDark = document.documentElement.dataset.theme === 'dark';
+  document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
+  el.themeIcon.textContent = isDark ? '☾' : '☀';
+  try { localStorage.setItem('taxclarity-v2-theme', isDark ? 'light' : 'dark'); } catch(e) {}
+});
+
+// Restore saved theme
+(function initTheme() {
+  try {
+    const saved = localStorage.getItem('taxclarity-v2-theme');
+    if (saved === 'dark') {
+      document.documentElement.dataset.theme = 'dark';
+      el.themeIcon.textContent = '☀';
+    }
+  } catch(e) {}
+})();
+
+// ── Init ──────────────────────────────────────────────────────
+initDropdowns();
+recalculate();
+</script>
+</body>
+</html>

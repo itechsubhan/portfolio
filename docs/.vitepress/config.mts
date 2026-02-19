@@ -7,10 +7,14 @@ export default defineConfig({
   head: [['link', { rel: 'icon', href: '/favicon.png' }]],
   cleanUrls: true,
   themeConfig: {
+    search: {
+      provider: 'local'
+    },
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Projects', link: '/projects/' },
+      { text: 'Tools', link: '/tools/' },
       { text: 'Achievements', link: '/achievements' },
       { text: 'Testimonials', link: '/testimonials' },
       { text: 'Blog', link: 'https://dev.to/mohdabdulsubhan' }, // Placeholder
@@ -22,6 +26,7 @@ export default defineConfig({
         text: 'Portfolio',
         items: [
           { text: 'Projects', link: '/projects/' },
+          { text: 'Tools', link: '/tools/' },
           { text: 'Achievements', link: '/achievements' },
           { text: 'Testimonials', link: '/testimonials' },
           { text: 'Contact', link: '/contact' }
