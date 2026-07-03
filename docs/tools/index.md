@@ -13,7 +13,7 @@ Welcome to my toolkit! This section features standalone applications and scripts
 Custom-built utilities and scripts I've created to solve specific challenges.
 
 
-::: tip <a href="/tax-calculator/index.html" target="_blank">US INCOME TAX CALCULATOR TOOL</a> 
+::: tip <a href="/portfolio/tax-calculator/index.html" target="_blank">US INCOME TAX CALCULATOR TOOL</a> 
 ![US Income Tax Calculator Preview](tax-calculator-preview.png)
 
 *Standalone US Federal and State income tax calculator with 2025-2027 projections.*
