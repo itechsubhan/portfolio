@@ -4,6 +4,7 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Mohd Abdul Subhan",
   description: "Portfolio of Mohd Abdul Subhan - Full Stack Developer",
+  base: '/portfolio/',
   head: [['link', { rel: 'icon', href: '/favicon.png' }]],
   cleanUrls: true,
   themeConfig: {
