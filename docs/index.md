@@ -5,6 +5,9 @@ layout: home
 hero:
   name: "Mohd Abdul Subhan"
   text: "Software Engineer"
+  image: 
+    src: 'images/avatar.jpg'
+    alt: 'Avatar'
   tagline: Building robust, scalable, and user-centric applications.
   actions:
     - theme: brand
