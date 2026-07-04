@@ -17,6 +17,10 @@ Custom-built utilities and scripts I've created to solve specific challenges.
 ![US Income Tax Calculator Preview](tax-calculator-preview.png)
 
 *Standalone US Federal and State income tax calculator with 2025-2027 projections.*
+
+::: tip <a href="/portfolio/Kayzen/index.html" target="_blank">Kayzen -android app</a> 
+![kayzen-signup](kayzen-preview-signup.png)
+
 :::
 ### 🌟 Community Gems
 Highly useful tools built by the community that I rely on daily. Full credit goes to the original creators.

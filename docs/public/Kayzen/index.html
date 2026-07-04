@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kayzen — Join the waitlist</title>
+  <meta name="description" content="Kayzen is a calm, no-shame habit builder. A slip is not a failure — repair it, freeze your streak, and watch your garden grow. Join the early access waitlist." />
+
+  <!-- Social sharing preview -->
+  <meta property="og:title" content="Kayzen — a no-shame habit builder" />
+  <meta property="og:description" content="A slip is not a failure. Repair it, freeze your streak, and watch your garden grow. Join the early access waitlist." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#1F6E45" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Palette pulled from the app (lib/core/theme/app_colors.dart) */
+      --leaf: #4CAF6E;
+      --leaf-deep: #1F6E45;
+      --leaf-mid: #3E9C63;
+      --leaf-soft: #DDEEE2;
+      --ink: #14181B;
+      --paper: #FAFBF8;
+      --bg-top: #C9E6D2;
+      --bg-mid: #9FCBAE;
+      --bg-bottom: #7FB894;
+      --bloom: #F2C14E;
+      --ocean: #2E7D9A;
+      --soil: #7A5A3E;
+      --sun: #FBF3D6;
+      --card: rgba(255, 255, 255, 0.72);
+      --card-border: rgba(31, 110, 69, 0.14);
+      --shadow: 0 24px 60px -24px rgba(20, 40, 28, 0.45);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Josefin Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, var(--sun) 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 46%, var(--bg-bottom) 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 24px 72px;
+    }
+
+    /* ---------- Brand ---------- */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 44px;
+    }
+    .brand .mark {
+      width: 42px; height: 42px;
+      display: grid; place-items: center;
+      background: linear-gradient(160deg, var(--leaf) 0%, var(--leaf-deep) 100%);
+      border-radius: 14px;
+      box-shadow: 0 10px 22px -10px rgba(31, 110, 69, 0.8);
+    }
+    .brand .mark svg { width: 24px; height: 24px; }
+    .brand .name {
+      font-size: 24px; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--leaf-deep);
+    }
+
+    /* ---------- Hero ---------- */
+    .hero { text-align: center; }
+    .pill {
+      display: inline-block;
+      font-size: 12.5px; font-weight: 600; letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--leaf-deep);
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid var(--card-border);
+      padding: 7px 14px;
+      border-radius: 999px;
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-size: clamp(34px, 7vw, 52px);
+      font-weight: 700;
+      line-height: 1.06;
+      letter-spacing: -0.5px;
+      margin-bottom: 18px;
+    }
+    h1 .accent { color: var(--leaf-deep); }
+    .subtitle {
+      font-size: clamp(16px, 2.6vw, 19px);
+      line-height: 1.55;
+      color: #2c3a30;
+      max-width: 520px;
+      margin: 0 auto;
+      font-weight: 400;
+    }
+
+    /* ---------- Features ---------- */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 40px 0;
+    }
+    .feature {
+      background: var(--card);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .feature .ico {
+      width: 44px; height: 44px; margin: 0 auto 12px;
+      display: grid; place-items: center;
+      border-radius: 12px;
+      background: var(--leaf-soft);
+    }
+    .feature .ico svg { width: 24px; height: 24px; }
+    .feature h3 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+    .feature p { font-size: 13px; line-height: 1.45; color: #45564a; font-weight: 400; }
+
+    /* ---------- Signup card ---------- */
+    .card {
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .card h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+    .card .lead { font-size: 15px; color: #45564a; margin-bottom: 24px; font-weight: 400; }
+
+    form { display: flex; gap: 10px; max-width: 460px; margin: 0 auto; }
+    input[type="email"] {
+      flex: 1;
+      font-family: inherit;
+      font-size: 16px;
+      padding: 15px 18px;
+      border: 1.5px solid rgba(31, 110, 69, 0.2);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    input[type="email"]::placeholder { color: #8a9a8f; }
+    input[type="email"]:focus {
+      border-color: var(--leaf);
+      box-shadow: 0 0 0 4px rgba(76, 175, 110, 0.18);
+    }
+    button {
+      font-family: inherit;
+      font-size: 16px; font-weight: 600;
+      color: #fff;
+      background: linear-gradient(160deg, var(--leaf) 0%, var(--leaf-deep) 100%);
+      border: none;
+      border-radius: 14px;
+      padding: 15px 24px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.12s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      box-shadow: 0 12px 24px -12px rgba(31, 110, 69, 0.9);
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 16px 30px -12px rgba(31, 110, 69, 0.95); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: 0.6; cursor: default; transform: none; }
+
+    .micro { font-size: 12.5px; color: #5c6b60; margin-top: 16px; font-weight: 400; }
+
+    /* Success / error states */
+    .status { display: none; margin-top: 4px; }
+    .status.show { display: block; animation: rise 0.4s ease both; }
+    .status .badge {
+      width: 60px; height: 60px; margin: 0 auto 16px;
+      display: grid; place-items: center; border-radius: 50%;
+      background: var(--leaf-soft);
+    }
+    .status .badge svg { width: 32px; height: 32px; }
+    .status h2 { margin-bottom: 8px; }
+    .status p { font-size: 15px; color: #45564a; font-weight: 400; }
+    .error-msg { display: none; color: #B76A4E; font-size: 13.5px; margin-top: 14px; font-weight: 500; }
+    .error-msg.show { display: block; }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12.5px;
+      color: #4f5f54;
+      font-weight: 400;
+    }
+    footer .tag { font-style: italic; }
+
+    @media (max-width: 560px) {
+      .features { grid-template-columns: 1fr; }
+      form { flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <!-- Brand -->
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <!-- sprout / leaf mark -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="#FAFBF8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21V11" />
+          <path d="M12 13c-1.2-3.5-4-4.8-7-4.8 0 3.5 2.5 6 7 6z" fill="rgba(250,251,248,0.25)" />
+          <path d="M12 11c1-3.4 3.6-5 6.5-5 .2 3.6-2.2 6-6.5 6z" fill="rgba(250,251,248,0.25)" />
+        </svg>
+      </span>
+      <span class="name">Kayzen</span>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <span class="pill">Early access · Free to join</span>
+      <h1>A slip is <span class="accent">not a failure.</span></h1>
+      <p class="subtitle">
+        Kayzen is a calm, no-shame habit builder. When you miss a day, you don't reset to zero —
+        you complete a small <strong>repair</strong>, freeze your streak, and keep growing.
+        A hand-painted garden blooms as your habits take root.
+      </p>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+      <div class="feature">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12a9 9 0 1 0 9-9" /><path d="M3 3v6h6" /><path d="m9 12 2 2 4-4" />
+          </svg>
+        </span>
+        <h3>Repair, don't reset</h3>
+        <p>A missed day becomes a tiny recovery task — your streak freezes instead of breaking.</p>
+      </div>
+      <div class="feature">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21c-4.5-3-8-6-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 5-3.5 8-8 11z" />
+          </svg>
+        </span>
+        <h3>Gentle by design</h3>
+        <p>Check in under 30 seconds. No guilt, no red alarms — just quiet, steady progress.</p>
+      </div>
+      <div class="feature">
+        <span class="ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22V12" /><path d="M12 14c-1.5-4-5-5.5-8.5-5.5 0 4 3 7 8.5 7z" />
+            <path d="M12 12c1.2-4 4.4-6 8-6 .2 4.3-2.8 7-8 7z" />
+          </svg>
+        </span>
+        <h3>Watch it grow</h3>
+        <p>Earn XP, levels, and supportive badges while your garden blooms with every streak.</p>
+      </div>
+    </section>
+
+    <!-- Signup -->
+    <section class="card">
+      <div id="form-view">
+        <h2>Be the first to plant something.</h2>
+        <p class="lead">Join the waitlist for early access. We'll send you an invite when Kayzen is ready.</p>
+
+        <!--
+          ┌─────────────────────────────────────────────────────────────────┐
+          │  CONNECT MAILCHIMP (one-time, ~3 min) — see the MAILCHIMP config  │
+          │  object in the <script> at the bottom of this file. You only edit │
+          │  three values there (u, id, dc). Nothing to change in this form.  │
+          │                                                                   │
+          │  The empty text input below the email field is a spam "honeypot"  │
+          │  Mailchimp expects — leave it exactly as-is (it stays hidden).    │
+          └─────────────────────────────────────────────────────────────────┘
+        -->
+        <form id="waitlist-form" novalidate>
+          <input
+            type="email"
+            name="EMAIL"
+            id="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          />
+          <button type="submit" id="submit-btn">Join waitlist</button>
+
+          <!-- Mailchimp bot-protection honeypot. Real users never see or fill it.
+               The field name is set from your config at runtime. Do not remove. -->
+          <div id="mc-honeypot" aria-hidden="true" style="position:absolute;left:-5000px;overflow:hidden" tabindex="-1">
+            <input type="text" name="" id="mc-honeypot-input" tabindex="-1" value="" autocomplete="off" />
+          </div>
+        </form>
+        <p class="error-msg" id="error-msg">Hmm, that didn't go through. Please try again.</p>
+        <p class="micro">No spam, ever. One email when we launch — then you decide.</p>
+      </div>
+
+      <!-- Success state -->
+      <div class="status" id="success-view">
+        <span class="badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 13 4 4L19 7" />
+          </svg>
+        </span>
+        <h2>You're on the list.</h2>
+        <p>Thanks for growing with us. We'll be in touch when your invite is ready.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p class="tag">Kayzen — build gently, repair kindly, grow steadily.</p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      /* ═══════════════════════════════════════════════════════════════════
+         MAILCHIMP CONFIG — edit these three values, then you're done.
+
+         Where to find them (takes ~3 min):
+           1. Mailchimp → Audience → Sign up forms → "Embedded forms".
+           2. Pick any style and look at the generated <form> code.
+           3. In its action URL you'll see something like:
+                https://kayzen.us21.list-manage.com/subscribe/post?u=abc123def456&id=7a8b9c0d1e
+              From that URL copy:
+                dc  → the "us21" part (your data center, right before .list-manage.com)
+                u   → the value after  u=
+                id  → the value after  id=
+         The honeypot field name is built automatically from u + id — no need to touch it.
+         ═══════════════════════════════════════════════════════════════════ */
+      var MAILCHIMP = {
+        dc:   'us15',                          // data center (before .list-manage.com)
+        u:    '746462004f0207d262d9d42fe',     // account id (u=)
+        id:   '5dfd3f836d',                    // audience id (id=)
+        f_id: '004e6ee0f0'                     // form id (f_id=) — optional, leave '' if absent
+      };
+
+      var form = document.getElementById('waitlist-form');
+      var formView = document.getElementById('form-view');
+      var successView = document.getElementById('success-view');
+      var errorMsg = document.getElementById('error-msg');
+      var submitBtn = document.getElementById('submit-btn');
+      var emailInput = document.getElementById('email');
+      var honeypotInput = document.getElementById('mc-honeypot-input');
+
+      var configured =
+        MAILCHIMP.dc.indexOf('XX') === -1 &&
+        MAILCHIMP.u.indexOf('YOUR_') === -1 &&
+        MAILCHIMP.id.indexOf('YOUR_') === -1;
+
+      // Mailchimp's anti-bot honeypot field is literally named "b_<u>_<id>".
+      if (configured) {
+        honeypotInput.setAttribute('name', 'b_' + MAILCHIMP.u + '_' + MAILCHIMP.id);
+      }
+
+      function showSuccess() {
+        formView.style.display = 'none';
+        successView.classList.add('show');
+      }
+
+      function setError(msg) {
+        errorMsg.textContent = msg || "Hmm, that didn't go through. Please try again.";
+        errorMsg.classList.add('show');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join waitlist';
+      }
+
+      // Mailchimp only supports JSONP for cross-origin submits from a static
+      // page, so we load its post-json endpoint via a <script> tag and read
+      // the { result, msg } object it calls back with.
+      function submitToMailchimp(email) {
+        var cb = 'mcCallback_' + Date.now();
+        var base = 'https://' + MAILCHIMP.dc + '.list-manage.com/subscribe/post-json';
+        var honeypotName = 'b_' + MAILCHIMP.u + '_' + MAILCHIMP.id;
+
+        var params =
+          '?u=' + encodeURIComponent(MAILCHIMP.u) +
+          '&id=' + encodeURIComponent(MAILCHIMP.id) +
+          (MAILCHIMP.f_id ? '&f_id=' + encodeURIComponent(MAILCHIMP.f_id) : '') +
+          '&EMAIL=' + encodeURIComponent(email) +
+          '&' + honeypotName + '=' +          // honeypot stays empty
+          '&c=' + cb;
+
+        var script = document.createElement('script');
+        var done = false;
+
+        window[cb] = function (data) {
+          done = true;
+          cleanup();
+          if (data && data.result === 'success') {
+            showSuccess();
+          } else {
+            // Mailchimp wraps messages in HTML; strip tags for a clean line.
+            var msg = data && data.msg ? String(data.msg).replace(/<[^>]*>/g, '') : '';
+            // "already subscribed" is a friendly, not-really-an-error case.
+            if (/already subscribed/i.test(msg)) {
+              showSuccess();
+            } else {
+              setError(msg);
+            }
+          }
+        };
+
+        function cleanup() {
+          if (script.parentNode) script.parentNode.removeChild(script);
+          try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        }
+
+        script.src = base + params;
+        script.onerror = function () { if (!done) { cleanup(); setError(); } };
+        document.body.appendChild(script);
+
+        // Safety net if the callback never fires (network/adblock).
+        setTimeout(function () { if (!done) { cleanup(); setError('Network hiccup — please try again.'); } }, 10000);
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        errorMsg.classList.remove('show');
+
+        var email = emailInput.value.trim();
+        if (!email || !emailInput.checkValidity()) {
+          setError('Please enter a valid email address.');
+          return;
+        }
+
+        if (!configured) {
+          // Mailchimp not filled in yet — make it obvious in dev, not to visitors in prod.
+          setError('Waitlist isn\u2019t connected yet. (Add your Mailchimp keys in index.html.)');
+          console.warn('[Kayzen waitlist] Set MAILCHIMP.dc / .u / .id in index.html to enable signups.');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Joining…';
+        submitToMailchimp(email);
+      });
+    })();
+  </script>
+</body>
+</html>
