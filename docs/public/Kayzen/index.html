@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kayzen — Join the waitlist</title>
-  <meta name="description" content="Kayzen is a calm, no-shame habit builder. A slip is not a failure — repair it, freeze your streak, and watch your garden grow. Join the early access waitlist." />
+  <title>Kayzen · Join the waitlist</title>
+  <meta name="description" content="Kayzen is a calm, no-shame habit builder. A slip is not a failure. Repair it, keep your streak, and watch your garden grow. Join the early access waitlist." />
 
   <!-- Social sharing preview -->
   <meta property="og:title" content="Kayzen — a no-shame habit builder" />
@@ -39,7 +39,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 28px; }
 
     body {
       font-family: 'Josefin Sans', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -109,6 +109,43 @@
       margin: 0 auto;
       font-weight: 400;
     }
+    .story-cta { margin-top: 24px; }
+    .story-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 15.5px;
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--leaf-deep);
+      background: rgba(255, 255, 255, 0.82);
+      border: 1.5px solid rgba(31, 110, 69, 0.28);
+      border-radius: 999px;
+      padding: 12px 22px;
+      box-shadow: 0 10px 24px -14px rgba(31, 110, 69, 0.7);
+      transition: transform 0.14s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+    .story-cta a:hover {
+      transform: translateY(-2px);
+      background: #fff;
+      box-shadow: 0 16px 30px -14px rgba(31, 110, 69, 0.85);
+    }
+    .story-cta .spark { font-size: 15px; }
+    .story-cta .arr {
+      transition: transform 0.18s ease;
+      color: var(--leaf);
+      font-weight: 700;
+    }
+    .story-cta a:hover .arr { transform: translateX(4px); color: var(--leaf-deep); }
+
+    @keyframes storyPulse {
+      0%, 100% { box-shadow: 0 10px 24px -14px rgba(31, 110, 69, 0.7); }
+      50% { box-shadow: 0 12px 30px -12px rgba(76, 175, 110, 0.75); }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .story-cta a { animation: storyPulse 2.6s ease-in-out infinite; }
+      .story-cta a:hover { animation: none; }
+    }
 
     /* ---------- Features ---------- */
     .features {
@@ -147,6 +184,7 @@
       box-shadow: var(--shadow);
       text-align: center;
     }
+    #signup-card { margin-top: 32px; text-align: center; }
     .card h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
     .card .lead { font-size: 15px; color: #45564a; margin-bottom: 24px; font-weight: 400; }
 
@@ -243,6 +281,41 @@
     }
     .btn-link.secondary:hover { box-shadow: 0 10px 20px -14px rgba(31, 110, 69, 0.6); }
 
+    /* ---------- Gated download flow ---------- */
+    .step-body { flex: 1; }
+    .step-body p { margin-bottom: 12px; }
+    .step-body .cta-row { justify-content: flex-start; margin-top: 4px; }
+    .step[data-locked="true"] { opacity: 0.72; }
+    .step.unlocked { opacity: 1; }
+
+    .btn-link.locked {
+      background: rgba(255, 255, 255, 0.6);
+      color: #8a9a8f;
+      box-shadow: none;
+      border: 1.5px solid rgba(31, 110, 69, 0.15);
+      cursor: not-allowed;
+    }
+    .btn-link.locked:hover { transform: none; box-shadow: none; }
+    .btn-link.locked::before { content: '🔒 '; }
+
+    .lock-note { font-size: 12.5px; color: #5c6b60; margin-top: 12px; font-weight: 500; }
+    .step.unlocked .lock-note { display: none; }
+    .unlock-fallback { font-size: 12.5px; color: #5c6b60; margin-top: 10px; font-weight: 400; display: none; }
+    .step.unlocked .unlock-fallback { display: none; }
+    .linkish {
+      background: none; border: none; padding: 0; margin: 0;
+      color: var(--leaf-deep); font-weight: 600; font-family: inherit;
+      font-size: 12.5px; cursor: pointer; text-decoration: underline;
+      box-shadow: none;
+    }
+    .linkish:hover { transform: none; box-shadow: none; }
+    .unlocked-note {
+      display: none;
+      font-size: 13px; color: var(--leaf-deep); font-weight: 600;
+      margin-top: 12px;
+    }
+    .step.unlocked .unlocked-note { display: block; }
+
     /* Success / error states */
     .status { display: none; margin-top: 4px; }
     .status.show { display: block; animation: rise 0.4s ease both; }
@@ -271,6 +344,81 @@
       font-weight: 400;
     }
     footer .tag { font-style: italic; }
+    footer .story-link {
+      color: var(--leaf-deep); font-weight: 600; text-decoration: none;
+      border-bottom: 1px solid rgba(31, 110, 69, 0.3); padding-bottom: 1px;
+    }
+    footer .story-link:hover { border-color: var(--leaf-deep); }
+
+    /* ═══════════ Motion & aesthetics ═══════════ */
+
+    /* Ambient drifting leaves behind everything */
+    .ambient {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .ambient .leaf {
+      position: absolute;
+      top: -8vh;
+      color: rgba(31, 110, 69, 0.13);
+      animation-name: drift;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      will-change: transform, opacity;
+    }
+    .ambient .leaf svg { display: block; width: 100%; height: 100%; }
+    @keyframes drift {
+      0%   { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+      8%   { opacity: 1; }
+      92%  { opacity: 1; }
+      100% { transform: translateY(118vh) translateX(46px) rotate(340deg); opacity: 0; }
+    }
+    main.wrap { position: relative; z-index: 1; }
+
+    /* Scroll-reveal for below-the-fold content */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s cubic-bezier(.2,.7,.2,1), transform 0.75s cubic-bezier(.2,.7,.2,1);
+      will-change: opacity, transform;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal[data-delay="1"] { transition-delay: 0.09s; }
+    .reveal[data-delay="2"] { transition-delay: 0.18s; }
+    .reveal[data-delay="3"] { transition-delay: 0.27s; }
+
+    /* Staggered hero entrance */
+    .brand,
+    .hero > * { animation: heroIn 0.85s cubic-bezier(.2,.7,.2,1) both; }
+    .hero .pill { animation-delay: 0.06s; }
+    .hero h1 { animation-delay: 0.14s; }
+    .hero .subtitle { animation-delay: 0.24s; }
+    .hero .story-cta { animation-delay: 0.34s; }
+    .hero #signup-card { animation-delay: 0.44s; }
+    @keyframes heroIn {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Hover lift */
+    .feature { transition: transform 0.28s cubic-bezier(.2,.7,.2,1), box-shadow 0.28s ease, background 0.28s ease; }
+    .feature:hover {
+      transform: translateY(-5px);
+      background: rgba(255, 255, 255, 0.85);
+      box-shadow: 0 22px 44px -26px rgba(20, 40, 28, 0.55);
+    }
+    .feature .ico { transition: transform 0.3s cubic-bezier(.2,.7,.2,1); }
+    .feature:hover .ico { transform: scale(1.08) rotate(-4deg); }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .ambient { display: none; }
+      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .brand, .hero > * { animation: none !important; }
+      .story-cta a { animation: none !important; }
+    }
 
     @media (max-width: 560px) {
       .features { grid-template-columns: 1fr; }
@@ -282,6 +430,7 @@
   </style>
 </head>
 <body>
+  <div class="ambient" aria-hidden="true"></div>
   <main class="wrap">
     <!-- Brand -->
     <div class="brand">
@@ -299,35 +448,96 @@
     <!-- Hero -->
     <section class="hero">
       <span class="pill">Early access · Free to join</span>
-      <h1>A slip is <span class="accent">not a failure.</span></h1>
+      <h1>Showing up matters more than being perfect.</h1>
+
       <p class="subtitle">
-        Kayzen is a calm, no-shame habit builder. When you miss a day, you don't reset to zero —
-        you complete a small <strong>repair</strong>, freeze your streak, and keep growing.
-        A hand-painted garden blooms as your habits take root.
+        Miss a day? That's okay. Do a small <strong>repair</strong>, keep your streak,
+        and watch your little garden grow.
       </p>
+
+      <p class="story-cta">
+        <a href="story.html">
+          <span class="spark" aria-hidden="true">✨</span>
+          See the idea behind Kayzen
+          <span class="arr" aria-hidden="true">→</span>
+        </a>
+      </p>
+
+      <!-- Signup -->
+      <div class="card" id="signup-card">
+        <div id="form-view">
+          <h2>Be the first to plant something.</h2>
+          <p class="lead">Join the waitlist and we'll send you an invite when Kayzen is ready.</p>
+
+          <!--
+            ┌─────────────────────────────────────────────────────────────────┐
+            │  CONNECT MAILCHIMP (one-time, ~3 min): see the MAILCHIMP config   │
+            │  object in the <script> at the bottom of this file. You only edit │
+            │  three values there (u, id, dc). Nothing to change in this form.  │
+            │                                                                   │
+            │  The empty text input below the email field is a spam "honeypot"  │
+            │  Mailchimp expects: leave it exactly as-is (it stays hidden).     │
+            └─────────────────────────────────────────────────────────────────┘
+          -->
+          <form id="waitlist-form" novalidate>
+            <input
+              type="email"
+              name="EMAIL"
+              id="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              required
+            />
+            <button type="submit" id="submit-btn">Join waitlist</button>
+
+            <!-- Mailchimp bot-protection honeypot. Real users never see or fill it.
+                 The field name is set from your config at runtime. Do not remove. -->
+            <div id="mc-honeypot" aria-hidden="true" style="position:absolute;left:-5000px;overflow:hidden" tabindex="-1">
+              <input type="text" name="" id="mc-honeypot-input" tabindex="-1" value="" autocomplete="off" />
+            </div>
+          </form>
+          <p class="error-msg" id="error-msg">Hmm, that didn't go through. Please try again.</p>
+          <p class="micro">No spam, ever. Just one email when we launch.</p>
+        </div>
+
+        <!-- Success state -->
+        <div class="status" id="success-view">
+          <span class="badge" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m5 13 4 4L19 7" />
+            </svg>
+          </span>
+          <h2>You're on the list.</h2>
+          <p>One more step: join our tester group so Google will let you download the app.</p>
+          <div class="cta-row" style="justify-content:center; margin-top:18px;">
+            <a class="btn-link" id="success-join-btn" href="https://groups.google.com/g/kayzen-testing" target="_blank" rel="noopener">Join the tester group</a>
+          </div>
+          <p class="micro">This unlocks the download links further down the page.</p>
+        </div>
+      </div>
     </section>
 
     <!-- Features -->
     <section class="features">
-      <div class="feature">
+      <div class="feature reveal" data-delay="1">
         <span class="ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 12a9 9 0 1 0 9-9" /><path d="M3 3v6h6" /><path d="m9 12 2 2 4-4" />
           </svg>
         </span>
         <h3>Repair, don't reset</h3>
-        <p>A missed day becomes a tiny recovery task — your streak freezes instead of breaking.</p>
+        <p>Miss a day and your streak freezes instead of breaking.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" data-delay="2">
         <span class="ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 21c-4.5-3-8-6-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 5-3.5 8-8 11z" />
           </svg>
         </span>
         <h3>Gentle by design</h3>
-        <p>Check in under 30 seconds. No guilt, no red alarms — just quiet, steady progress.</p>
+        <p>Check in under 30 seconds. No guilt, no red alarms.</p>
       </div>
-      <div class="feature">
+      <div class="feature reveal" data-delay="3">
         <span class="ico" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22V12" /><path d="M12 14c-1.5-4-5-5.5-8.5-5.5 0 4 3 7 8.5 7z" />
@@ -335,85 +545,45 @@
           </svg>
         </span>
         <h3>Watch it grow</h3>
-        <p>Earn XP, levels, and supportive badges while your garden blooms with every streak.</p>
-      </div>
-    </section>
-
-    <!-- Signup -->
-    <section class="card">
-      <div id="form-view">
-        <h2>Be the first to plant something.</h2>
-        <p class="lead">Join the waitlist for early access. We'll send you an invite when Kayzen is ready.</p>
-
-        <!--
-          ┌─────────────────────────────────────────────────────────────────┐
-          │  CONNECT MAILCHIMP (one-time, ~3 min) — see the MAILCHIMP config  │
-          │  object in the <script> at the bottom of this file. You only edit │
-          │  three values there (u, id, dc). Nothing to change in this form.  │
-          │                                                                   │
-          │  The empty text input below the email field is a spam "honeypot"  │
-          │  Mailchimp expects — leave it exactly as-is (it stays hidden).    │
-          └─────────────────────────────────────────────────────────────────┘
-        -->
-        <form id="waitlist-form" novalidate>
-          <input
-            type="email"
-            name="EMAIL"
-            id="email"
-            placeholder="you@example.com"
-            autocomplete="email"
-            required
-          />
-          <button type="submit" id="submit-btn">Join waitlist</button>
-
-          <!-- Mailchimp bot-protection honeypot. Real users never see or fill it.
-               The field name is set from your config at runtime. Do not remove. -->
-          <div id="mc-honeypot" aria-hidden="true" style="position:absolute;left:-5000px;overflow:hidden" tabindex="-1">
-            <input type="text" name="" id="mc-honeypot-input" tabindex="-1" value="" autocomplete="off" />
-          </div>
-        </form>
-        <p class="error-msg" id="error-msg">Hmm, that didn't go through. Please try again.</p>
-        <p class="micro">No spam, ever. One email when we launch — then you decide.</p>
-      </div>
-
-      <!-- Success state -->
-      <div class="status" id="success-view">
-        <span class="badge" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1F6E45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m5 13 4 4L19 7" />
-          </svg>
-        </span>
-        <h2>You're on the list.</h2>
-        <p>Thanks for growing with us. We'll be in touch when your invite is ready.</p>
+        <p>Earn XP and badges as your garden blooms with every streak.</p>
       </div>
     </section>
 
     <!-- Closed testing invite -->
-    <section class="card testing">
+    <section class="card testing reveal" id="testing">
       <h2>Kayzen is in closed testing.</h2>
-      <p class="lead">You're invited to try the Android app early — your feedback helps shape the launch.</p>
+      <p class="lead">Google only shows the app to approved testers. Join our tester group first — then the download links unlock.</p>
 
       <div class="steps">
         <div class="step">
           <span class="num" aria-hidden="true">1</span>
-          <p><strong>Accept the invite.</strong> Open the testing link and join with your Google account.</p>
+          <div class="step-body">
+            <p><strong>Join the tester group.</strong> Sign in with the same Google account you use on your Android device, then tap <strong>“Join group.”</strong></p>
+            <a class="btn-link" id="join-group-btn" href="https://groups.google.com/g/kayzen-testing" target="_blank" rel="noopener">Join the tester group</a>
+          </div>
         </div>
-        <div class="step">
+
+        <div class="step" id="download-step" data-locked="true">
           <span class="num" aria-hidden="true">2</span>
-          <p><strong>Download the app.</strong> Once you've joined, install Kayzen from Google Play.</p>
+          <div class="step-body">
+            <p><strong>Download the app.</strong> Once you've joined the group, these unlock. (Google can take a minute to sync your membership.)</p>
+            <div class="cta-row">
+              <a class="btn-link locked download-link" id="join-test-btn" href="https://play.google.com/apps/testing/com.kayzen" target="_blank" rel="noopener" aria-disabled="true">Join the closed test</a>
+              <a class="btn-link secondary locked download-link" id="play-btn" href="https://play.google.com/store/apps/details?id=com.kayzen" target="_blank" rel="noopener" aria-disabled="true">Get it on Google Play</a>
+            </div>
+            <p class="lock-note">Join the tester group above to unlock these links.</p>
+            <p class="unlocked-note">Downloads unlocked — enjoy testing Kayzen! 🌱</p>
+            <p class="unlock-fallback" id="unlock-fallback">Already a member of the group? <button type="button" class="linkish" id="unlock-btn">Unlock downloads</button></p>
+          </div>
         </div>
       </div>
 
-      <div class="cta-row">
-        <a class="btn-link" href="https://play.google.com/apps/testing/com.kayzen" target="_blank" rel="noopener">Join the closed test</a>
-        <a class="btn-link secondary" href="https://play.google.com/store/apps/details?id=com.kayzen" target="_blank" rel="noopener">Get it on Google Play</a>
-      </div>
-
-      <p class="micro">Sign in with the same Google account you use on your Android device.</p>
+      <p class="micro">Use the same Google account across the tester group and Google Play.</p>
     </section>
 
-    <footer>
-      <p class="tag">Kayzen — build gently, repair kindly, grow steadily.</p>
+    <footer class="reveal">
+      <p><a class="story-link" href="story.html">Read the full story →</a></p>
+      <p class="tag">Kayzen. Build gently, repair kindly, grow steadily.</p>
     </footer>
   </main>
 
@@ -519,6 +689,82 @@
         setTimeout(function () { if (!done) { cleanup(); setError('Network hiccup — please try again.'); } }, 10000);
       }
 
+      /* ═══════════════════════════════════════════════════════════════════
+         GATED DOWNLOADS — testers must join the Google Group first.
+
+         A static page can't add someone to a Google Group for them (Google has
+         no public API for that), so we gate the download links instead: they
+         stay locked until the visitor opens the group to join, then unlock and
+         are remembered on this device.
+         ═══════════════════════════════════════════════════════════════════ */
+      var GROUP_URL = 'https://groups.google.com/g/kayzen-testing';
+      var UNLOCK_KEY = 'kayzen_group_joined';
+
+      var downloadStep = document.getElementById('download-step');
+      var joinGroupBtn = document.getElementById('join-group-btn');
+      var successJoinBtn = document.getElementById('success-join-btn');
+      var unlockBtn = document.getElementById('unlock-btn');
+      var unlockFallback = document.getElementById('unlock-fallback');
+      var lockedLinks = Array.prototype.slice.call(document.querySelectorAll('.download-link'));
+
+      var armed = false; // set once they've opened the group to join
+
+      function unlockDownloads() {
+        if (downloadStep) {
+          downloadStep.setAttribute('data-locked', 'false');
+          downloadStep.classList.add('unlocked');
+        }
+        lockedLinks.forEach(function (a) {
+          a.classList.remove('locked');
+          a.removeAttribute('aria-disabled');
+        });
+        try { localStorage.setItem(UNLOCK_KEY, '1'); } catch (e) {}
+      }
+
+      // Locked links shouldn't navigate — nudge people to join first.
+      lockedLinks.forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          if (a.classList.contains('locked')) {
+            e.preventDefault();
+            if (joinGroupBtn) {
+              joinGroupBtn.focus();
+              joinGroupBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }
+        });
+      });
+
+      // Opening the group arms an auto-unlock for when they come back to the tab.
+      function armUnlock() {
+        armed = true;
+        if (unlockFallback) unlockFallback.style.display = 'block';
+      }
+      if (joinGroupBtn) joinGroupBtn.addEventListener('click', armUnlock);
+      if (successJoinBtn) {
+        successJoinBtn.addEventListener('click', function () {
+          armUnlock();
+          if (downloadStep) {
+            setTimeout(function () {
+              downloadStep.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 400);
+          }
+        });
+      }
+
+      // When they return to this tab after joining, unlock the downloads.
+      window.addEventListener('focus', function () {
+        if (armed) unlockDownloads();
+      });
+      document.addEventListener('visibilitychange', function () {
+        if (armed && document.visibilityState === 'visible') unlockDownloads();
+      });
+
+      // Manual fallback + remember across visits.
+      if (unlockBtn) unlockBtn.addEventListener('click', unlockDownloads);
+      try {
+        if (localStorage.getItem(UNLOCK_KEY) === '1') unlockDownloads();
+      } catch (e) {}
+
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         errorMsg.classList.remove('show');
@@ -540,6 +786,48 @@
         submitBtn.textContent = 'Joining…';
         submitToMailchimp(email);
       });
+    })();
+  </script>
+
+  <!-- Aesthetic motion: scroll-reveal + ambient leaves -->
+  <script>
+    (function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Reveal elements as they scroll into view.
+      var reveals = document.querySelectorAll('.reveal');
+      if (!reduce && 'IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        reveals.forEach(function (el) { io.observe(el); });
+      } else {
+        reveals.forEach(function (el) { el.classList.add('in'); });
+      }
+
+      // Gentle drifting leaves in the background.
+      if (!reduce) {
+        var amb = document.querySelector('.ambient');
+        if (amb) {
+          var LEAF = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 4 4 8 4 13c0 4.4 3.2 8.2 8 9 0-6 2.2-10.2 8-13-3.2 0-6.2.6-8 3 .6-4.2 0-7.2 0-10z"/></svg>';
+          var n = window.innerWidth < 560 ? 8 : 14;
+          for (var i = 0; i < n; i++) {
+            var s = document.createElement('span');
+            s.className = 'leaf';
+            var size = 14 + Math.random() * 26;
+            s.style.left = (Math.random() * 100) + 'vw';
+            s.style.width = size + 'px';
+            s.style.height = size + 'px';
+            s.style.animationDuration = (15 + Math.random() * 16) + 's';
+            s.style.animationDelay = (-Math.random() * 22) + 's';
+            s.style.color = 'rgba(31, 110, 69, ' + (0.06 + Math.random() * 0.1).toFixed(2) + ')';
+            s.innerHTML = LEAF;
+            amb.appendChild(s);
+          }
+        }
+      }
     })();
   </script>
 </body>
